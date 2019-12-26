@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADR", "AdrManager\ADR.cspro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{278B6899-2A92-4907-B62F-0B9E6DB7FC19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdrManager.MvvmUtilities", "AdrManager.MvvmUtilities\AdrManager.MvvmUtilities.csproj", "{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{9B975208-7134-4EBC-B5B4-472C837E3731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B975208-7134-4EBC-B5B4-472C837E3731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B975208-7134-4EBC-B5B4-472C837E3731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
