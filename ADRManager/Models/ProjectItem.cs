@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ADR.Models
 {
-    public class SolutionData
+    public class ProjectItem
     {
-        public List<ProjectData> ProjectData { get; internal set; } = new List<ProjectData>();
+        public string Name { get; set; }
+        public string Data { get; set; }
     }
 }

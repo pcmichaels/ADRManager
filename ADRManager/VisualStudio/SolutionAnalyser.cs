@@ -1,35 +1,72 @@
 ﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ADR.Models;
 using System.Threading.Tasks;
+using System;
+using ADR.Helpers;
 
-namespace MarkDownViewer.VisualStudio
+namespace ADR.VisualStudio
 {
     public class SolutionAnalyser
     {
-        internal async Task<string> ScanSolution()
+        public async Task<DataResult<SolutionData>> ScanSolution()
         {
+            var solutionData = new SolutionData();
+
             try
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var dte = (DTE)Package.GetGlobalService(typeof(DTE));
+                await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                var dte = (DTE)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE));
 
                 var sln = Microsoft.Build.Construction.SolutionFile.Parse(dte.Solution.FullName);
                 string summaryText = $"{sln.ProjectsInOrder.Count.ToString()} projects";
 
                 foreach (Project p in dte.Solution.Projects)
                 {
-                    summaryText += $"{Environment.NewLine} {p.Name} {p.ProjectItems.Count}";
+                    var projectData = new ProjectData()
+                    {
+                        Name = p.Name                        
+                    };
+
+                    await ScanProjectItems(p.ProjectItems, projectData);
+
+                    if (projectData?.Items?.Count > 0)
+                    {
+                        solutionData.ProjectData.Add(projectData);
+                    }
                 }
-                return summaryText;
+                return DataResult<SolutionData>.Success(solutionData);
             }
             catch
             {
-                return "Solution is not ready yet.";
+                return DataResult<SolutionData>.Fail("Solution is not ready yet.");
             }            
         }
+
+        private async Task ScanProjectItems(ProjectItems projectItems, ProjectData projectData)
+        {
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            foreach (EnvDTE.ProjectItem pi in projectItems)
+            {
+                if (pi.IsKind(ProjectItemTypes.SOLUTION_FOLDER, 
+                              ProjectItemTypes.PROJECT_FOLDER,
+                              ProjectItemTypes.SOLUTION_ITEM)
+                    && pi.ProjectItems != null)
+                {                    
+                    await ScanProjectItems(pi.ProjectItems, projectData);
+                    return;
+                }
+
+                string text = await pi.GetDocumentText();
+                if (string.IsNullOrWhiteSpace(text)) continue;
+
+                projectData.Items.Add(new Models.ProjectItem()
+                {
+                    Name = pi.Name,
+                    Data = text
+                });
+            }
+        }
+
     }
 }

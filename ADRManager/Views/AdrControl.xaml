@@ -16,6 +16,15 @@
                     Command="{Binding Scan}"/>
             <TextBlock x:Name="projectsText" Text="{Binding Summary}" />
 
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding MarkdownFiles}" Margin="0,-1,0,1">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </UserControl>

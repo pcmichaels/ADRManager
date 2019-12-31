@@ -1,5 +1,5 @@
 ﻿using AdrManager.MvvmUtilities;
-using MarkDownViewer.VisualStudio;
+using ADR.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,8 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using ADR.Models;
 
-namespace MarkDownViewer.ViewModels
+namespace ADR.ViewModels
 {
     public class AdrControlViewModel : INotifyPropertyChanged
     {
@@ -25,6 +26,8 @@ namespace MarkDownViewer.ViewModels
         }
         #endregion
 
+        private SolutionData _solutionData;
+
         public AdrControlViewModel()
         {
             Scan = new RelayCommandAsync<object>(ScanCommand);
@@ -39,10 +42,26 @@ namespace MarkDownViewer.ViewModels
 
         public RelayCommandAsync<object> Scan { get; set; }
 
+        public List<string> MarkdownFiles { get; set; }
+
         private async Task ScanCommand(object arg)
         {
             var solutionAnalyser = new SolutionAnalyser();
-            Summary = await solutionAnalyser.ScanSolution();            
+            var scanResult = await solutionAnalyser.ScanSolution();
+            if (scanResult.IsSuccess)
+            {
+                _solutionData = scanResult.Data;
+                Summary = "Successfully analysed project";
+                MarkdownFiles = scanResult.Data.ProjectData
+                    .SelectMany(a => a.Items)
+                    .Select(a => a.Name)
+                    .ToList();
+                OnPropertyChanged(nameof(MarkdownFiles));
+            }
+            else
+            {
+                Summary = scanResult.ErrorMessage;
+            }
         }
     }
 }

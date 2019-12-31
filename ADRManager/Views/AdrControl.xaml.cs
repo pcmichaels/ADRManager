@@ -1,8 +1,8 @@
 ﻿namespace ADR
 {
     using EnvDTE;
-    using MarkDownViewer.ViewModels;
-    using MarkDownViewer.VisualStudio;
+    using ADR.ViewModels;
+    using ADR.VisualStudio;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
     using System;

@@ -13,8 +13,8 @@
     <ProjectGuid>{9B975208-7134-4EBC-B5B4-472C837E3731}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MarkDownViewer</RootNamespace>
-    <AssemblyName>MarkDownViewer</AssemblyName>
+    <RootNamespace>ADR</RootNamespace>
+    <AssemblyName>ADR</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
@@ -47,6 +47,11 @@
   <ItemGroup>
     <Compile Include="AdrWindow.cs" />
     <Compile Include="AdrWindowCommand.cs" />
+    <Compile Include="Helpers\ProjectHelper.cs" />
+    <Compile Include="Helpers\ProjectItemTypes.cs" />
+    <Compile Include="Models\DataResult.cs" />
+    <Compile Include="Models\ProjectData.cs" />
+    <Compile Include="Models\ProjectItem.cs" />
     <Compile Include="ViewModels\AdrControlViewModel.cs" />
     <Compile Include="Views\AdrControl.xaml.cs">
       <DependentUpon>AdrControl.xaml</DependentUpon>
@@ -75,7 +80,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.200" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.202" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.3.1061" />
   </ItemGroup>
   <ItemGroup>
