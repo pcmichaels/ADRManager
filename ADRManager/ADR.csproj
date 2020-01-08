@@ -47,8 +47,11 @@
   <ItemGroup>
     <Compile Include="AdrWindow.cs" />
     <Compile Include="AdrWindowCommand.cs" />
-    <Compile Include="Helpers\ProjectHelper.cs" />
-    <Compile Include="Helpers\ProjectItemTypes.cs" />
+    <Compile Include="Rules\IRulesAnalyser.cs" />
+    <Compile Include="Rules\RulesAnalyser.cs" />
+    <Compile Include="VisualStudio\ISolutionAnalyser.cs" />
+    <Compile Include="VisualStudio\ProjectHelper.cs" />
+    <Compile Include="VisualStudio\ProjectItemTypes.cs" />
     <Compile Include="Models\DataResult.cs" />
     <Compile Include="Models\ProjectData.cs" />
     <Compile Include="Models\ProjectItem.cs" />
@@ -84,6 +87,9 @@
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.3.1061" />
+    <PackageReference Include="unity">
+      <Version>5.11.3</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\AdrControl.xaml">
@@ -103,6 +109,7 @@
       <Name>AdrManager.MvvmUtilities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

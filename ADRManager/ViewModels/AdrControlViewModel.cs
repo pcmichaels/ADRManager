@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ADR.Models;
+using ADR.Rules;
+using Unity;
 
 namespace ADR.ViewModels
 {
@@ -27,13 +29,23 @@ namespace ADR.ViewModels
         #endregion
 
         private SolutionData _solutionData;
+        private string _summary;
+        private readonly IRulesAnalyser _rulesAnalyser;
+        private readonly ISolutionAnalyser _solutionAnalyser;
 
-        public AdrControlViewModel()
-        {
+        public AdrControlViewModel() 
+            : this(AdrPackage.UnityContainer.Value.Resolve<IRulesAnalyser>(),
+                  AdrPackage.UnityContainer.Value.Resolve<ISolutionAnalyser>())
+        {}
+
+        public AdrControlViewModel(IRulesAnalyser rulesAnalyser, ISolutionAnalyser solutionAnalyser)
+        {            
+            _rulesAnalyser = rulesAnalyser;
+            _solutionAnalyser = solutionAnalyser;
+
             Scan = new RelayCommandAsync<object>(ScanCommand);
         }
 
-        private string _summary;
         public string Summary 
         { 
             get => _summary; 
@@ -46,8 +58,7 @@ namespace ADR.ViewModels
 
         private async Task ScanCommand(object arg)
         {
-            var solutionAnalyser = new SolutionAnalyser();
-            var scanResult = await solutionAnalyser.ScanSolution();
+            var scanResult = await _solutionAnalyser.ScanSolution();
             if (scanResult.IsSuccess)
             {
                 _solutionData = scanResult.Data;

@@ -1,13 +1,19 @@
 ﻿using EnvDTE;
 using ADR.Models;
 using System.Threading.Tasks;
-using System;
-using ADR.Helpers;
+using ADR.Rules;
 
 namespace ADR.VisualStudio
 {
-    public class SolutionAnalyser
+    public class SolutionAnalyser : ISolutionAnalyser
     {
+        private readonly IRulesAnalyser _rulesAnalyser;
+
+        public SolutionAnalyser(IRulesAnalyser rulesAnalyser)
+        {
+            _rulesAnalyser = rulesAnalyser;
+        }
+
         public async Task<DataResult<SolutionData>> ScanSolution()
         {
             var solutionData = new SolutionData();
@@ -54,7 +60,12 @@ namespace ADR.VisualStudio
                     && pi.ProjectItems != null)
                 {                    
                     await ScanProjectItems(pi.ProjectItems, projectData);
-                    return;
+                    continue;
+                }
+
+                if (!_rulesAnalyser.IsProjectItemNameValid(pi.Name))
+                {
+                    continue;
                 }
 
                 string text = await pi.GetDocumentText();
@@ -67,6 +78,5 @@ namespace ADR.VisualStudio
                 });
             }
         }
-
     }
 }

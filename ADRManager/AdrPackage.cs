@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using ADR.Rules;
+using ADR.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Unity;
 using Task = System.Threading.Tasks.Task;
 
 namespace ADR
@@ -28,7 +31,22 @@ namespace ADR
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(AdrWindow))]
     public sealed class AdrPackage : AsyncPackage
-    {
+    {        
+        public static Lazy<IUnityContainer> UnityContainer =
+         new Lazy<IUnityContainer>(() =>
+         {
+             IUnityContainer container = InitialiseUnityContainer();
+             return container;
+         });
+
+        private static IUnityContainer InitialiseUnityContainer()
+        {
+            UnityContainer container = new UnityContainer();
+            container.RegisterType<IRulesAnalyser, RulesAnalyser>();
+            container.RegisterType<ISolutionAnalyser, SolutionAnalyser>();
+            return container;
+        }
+
         /// <summary>
         /// ADRPackage GUID string.
         /// </summary>
