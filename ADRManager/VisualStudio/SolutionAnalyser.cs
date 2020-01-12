@@ -22,18 +22,21 @@ namespace ADR.VisualStudio
             {
                 await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var dte = (DTE)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE));
+                
+                string solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
 
                 var sln = Microsoft.Build.Construction.SolutionFile.Parse(dte.Solution.FullName);
                 string summaryText = $"{sln.ProjectsInOrder.Count.ToString()} projects";
 
                 foreach (Project p in dte.Solution.Projects)
                 {
+                    System.Diagnostics.Debug.WriteLine($"Project {p.Name}");
                     var projectData = new ProjectData()
                     {
                         Name = p.Name                        
                     };
 
-                    await ScanProjectItems(p.ProjectItems, projectData);
+                    await ScanProjectItems(p.ProjectItems, projectData, solutionDirectory);
 
                     if (projectData?.Items?.Count > 0)
                     {
@@ -48,7 +51,8 @@ namespace ADR.VisualStudio
             }            
         }
 
-        private async Task ScanProjectItems(ProjectItems projectItems, ProjectData projectData)
+        private async Task ScanProjectItems(
+            ProjectItems projectItems, ProjectData projectData, string solutionDirectory)
         {
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -56,11 +60,18 @@ namespace ADR.VisualStudio
             {
                 if (pi.IsKind(ProjectItemTypes.SOLUTION_FOLDER, 
                               ProjectItemTypes.PROJECT_FOLDER,
-                              ProjectItemTypes.SOLUTION_ITEM)
-                    && pi.ProjectItems != null)
-                {                    
-                    await ScanProjectItems(pi.ProjectItems, projectData);
-                    continue;
+                              ProjectItemTypes.SOLUTION_ITEM))
+                {
+                    if (pi.ProjectItems != null)
+                    {
+                        await ScanProjectItems(pi.ProjectItems, projectData, solutionDirectory);
+                        continue;
+                    }
+                    else if (pi.SubProject != null)
+                    {
+                        await ScanProjectItems(pi.SubProject.ProjectItems, projectData, solutionDirectory);
+                        continue;
+                    }                    
                 }
 
                 if (!_rulesAnalyser.IsProjectItemNameValid(pi.Name))
@@ -68,7 +79,7 @@ namespace ADR.VisualStudio
                     continue;
                 }
 
-                string text = await pi.GetDocumentText();
+                string text = await pi.GetDocumentText(solutionDirectory);
                 if (string.IsNullOrWhiteSpace(text)) continue;
 
                 projectData.Items.Add(new Models.ProjectItem()

@@ -34,15 +34,40 @@ namespace ADR.VisualStudio
             return false;
         }
 
-        public static async Task<string> GetDocumentText(this ProjectItem projectItem)
+        public static async Task<string> GetDocumentText(this ProjectItem projectItem, string solutionDirectory)
         {            
             if (projectItem == null) return string.Empty;
-            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            string path = projectItem.Properties?.Item("FullPath")?.Value?.ToString();
-            if (string.IsNullOrWhiteSpace(path)) return string.Empty;
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            string path = await GetFullPath(projectItem.Properties);
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                path = await GetFullPath(projectItem.ContainingProject?.Properties);
+
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    path = Path.Combine(solutionDirectory, projectItem.Name);
+                }
+                else
+                {
+                    path = Path.Combine(path, projectItem.Name);
+                }
+            }
 
             return File.ReadAllText(path);
+        }
+
+        private async static Task<string> GetFullPath(Properties properties)
+        {
+            try
+            {
+                await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                return properties?.Item("FullPath")?.Value?.ToString();
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }

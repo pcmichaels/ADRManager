@@ -6,8 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADR", "AdrManager\ADR.csproj", "{9B975208-7134-4EBC-B5B4-472C837E3731}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{278B6899-2A92-4907-B62F-0B9E6DB7FC19}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdrManager.MvvmUtilities", "AdrManager.MvvmUtilities\AdrManager.MvvmUtilities.csproj", "{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdrManager.MvvmUtilities", "AdrManager.MvvmUtilities\AdrManager.MvvmUtilities.csproj", "{A3B4FF08-ABC6-4C42-985F-381AFD9964EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
