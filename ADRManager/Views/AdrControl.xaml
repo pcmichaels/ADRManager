@@ -8,19 +8,24 @@
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             Name="MyToolWindow">
+             Name="AdrControlWindow">
     <Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">Architectural Decision Records</TextBlock>
             <Button Content="Scan Solution" Height="37" Name="scan" Margin="10,0"
-                    Command="{Binding Scan}"/>
+                    Command="{Binding ScanCommand}"/>
             <TextBlock x:Name="projectsText" Text="{Binding Summary}" />
 
             <ScrollViewer>
                 <ItemsControl ItemsSource="{Binding MarkdownFiles}" Margin="0,-1,0,1">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}"/>
+                            <Button BorderThickness="0" MinWidth="50" 
+                                    MinHeight="50" Background="Aqua"
+                                    Command="{Binding DataContext.OpenFileCommand, ElementName=AdrControlWindow}" 
+                                    CommandParameter="{Binding Path}">
+                                <TextBlock Text="{Binding Name}" Margin="5, 5, 0, 5" Background="Aqua" />
+                            </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

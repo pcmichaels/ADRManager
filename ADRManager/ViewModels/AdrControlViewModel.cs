@@ -43,7 +43,14 @@ namespace ADR.ViewModels
             _rulesAnalyser = rulesAnalyser;
             _solutionAnalyser = solutionAnalyser;
 
-            Scan = new RelayCommandAsync<object>(ScanCommand);
+            ScanCommand = new RelayCommandAsync<object>(Scan);
+            OpenFileCommand = new RelayCommandAsync<string>(OpenFile);
+        }
+
+        private async Task OpenFile(string path)
+        {
+            var file = MarkdownFiles.FirstOrDefault(a => a.Path == path);
+            await ProjectHelper.OpenDocumentForProjectItem(file.OriginalProjectItem);
         }
 
         public string Summary 
@@ -52,11 +59,13 @@ namespace ADR.ViewModels
             set => UpdateField(ref _summary, value); 
         }
 
-        public RelayCommandAsync<object> Scan { get; set; }
+        public RelayCommandAsync<object> ScanCommand { get; set; }
 
-        public List<string> MarkdownFiles { get; set; }
+        public List<ProjectItem> MarkdownFiles { get; set; }
 
-        private async Task ScanCommand(object arg)
+        public RelayCommandAsync<string> OpenFileCommand { get; set; }
+
+        private async Task Scan(object arg)
         {
             var scanResult = await _solutionAnalyser.ScanSolution();
             if (scanResult.IsSuccess)
@@ -64,8 +73,7 @@ namespace ADR.ViewModels
                 _solutionData = scanResult.Data;
                 Summary = "Successfully analysed project";
                 MarkdownFiles = scanResult.Data.ProjectData
-                    .SelectMany(a => a.Items)
-                    .Select(a => a.Name)
+                    .SelectMany(a => a.Items)                    
                     .ToList();
                 OnPropertyChanged(nameof(MarkdownFiles));
             }

@@ -34,9 +34,9 @@ namespace ADR.VisualStudio
             return false;
         }
 
-        public static async Task<string> GetDocumentText(this ProjectItem projectItem, string solutionDirectory)
+        public static async Task<(string path, string text)> GetDocumentText(this ProjectItem projectItem, string solutionDirectory)
         {            
-            if (projectItem == null) return string.Empty;
+            if (projectItem == null) return (string.Empty, string.Empty);
 
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             string path = await GetFullPath(projectItem.Properties);
@@ -54,7 +54,13 @@ namespace ADR.VisualStudio
                 }
             }
 
-            return File.ReadAllText(path);
+            return (path, File.ReadAllText(path));
+        }
+
+        public static async Task OpenDocumentForProjectItem(ProjectItem originalProjectItem)
+        {
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var doc = originalProjectItem.Open(EnvDTE.Constants.vsViewKindCode);
         }
 
         private async static Task<string> GetFullPath(Properties properties)

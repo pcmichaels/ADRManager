@@ -79,13 +79,15 @@ namespace ADR.VisualStudio
                     continue;
                 }
 
-                string text = await pi.GetDocumentText(solutionDirectory);
-                if (string.IsNullOrWhiteSpace(text)) continue;
+                var docResult = await pi.GetDocumentText(solutionDirectory);
+                if (string.IsNullOrWhiteSpace(docResult.text)) continue;
 
                 projectData.Items.Add(new Models.ProjectItem()
                 {
                     Name = pi.Name,
-                    Data = text
+                    Data = docResult.text,
+                    Path = docResult.path,
+                    OriginalProjectItem = pi
                 });
             }
         }

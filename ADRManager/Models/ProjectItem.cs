@@ -10,5 +10,7 @@ namespace ADR.Models
     {
         public string Name { get; set; }
         public string Data { get; set; }
+        public EnvDTE.ProjectItem OriginalProjectItem { get; internal set; }
+        public string Path { get; internal set; }
     }
 }
