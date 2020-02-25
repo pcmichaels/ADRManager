@@ -60,7 +60,8 @@ namespace ADR.VisualStudio
         public static async Task OpenDocumentForProjectItem(ProjectItem originalProjectItem)
         {
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var doc = originalProjectItem.Open(EnvDTE.Constants.vsViewKindCode);
+            var window = originalProjectItem.Open();
+            window.Visible = true;
         }
 
         private async static Task<string> GetFullPath(Properties properties)
