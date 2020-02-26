@@ -67,6 +67,7 @@ namespace ADR
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await AdrWindowCommand.InitializeAsync(this);
+            await AddAdrCommand.InitializeAsync(this);
         }
 
         #endregion

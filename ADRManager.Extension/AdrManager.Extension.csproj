@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AddAdrCommand.cs" />
     <Compile Include="AdrWindow.cs" />
     <Compile Include="AdrWindowCommand.cs" />
     <Compile Include="Rules\IRulesAnalyser.cs" />
@@ -105,6 +106,7 @@
     <VSCTCompile Include="AdrPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
+    <Content Include="Resources\AddAdrCommand.png" />
     <Content Include="Resources\AdrWindowCommand.png" />
   </ItemGroup>
   <ItemGroup>
