@@ -51,9 +51,8 @@
       </Button>
       <Button guid="guidAdrPackageCmdSet1" id="cmdidAddAdrCommand" priority="0x0100" type="Button">
         <Parent guid="guidAdrPackageCmdSet1" id="MyMenuGroup" />
-        <Icon guid="guidImages1" id="bmpPic1" />
         <Strings>
-          <ButtonText>Invoke AddAdrCommand</ButtonText>
+          <ButtonText>Add New ADR</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -70,7 +69,7 @@
     </Bitmaps>
     <Groups>
       <Group guid="guidAdrPackageCmdSet1" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_PROJECT_ADD" />
       </Group>
     </Groups>
   </Commands>
