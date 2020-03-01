@@ -1,13 +1,15 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace ADR.VisualStudio
+namespace AdrManager.VisualStudioSDKHelper
 {
     // https://github.com/madskristensen/MarkdownEditor/blob/master/src/Helpers/ProjectHelpers.cs
     public static class ProjectHelper
-    {        
+    {
         public static bool IsKind(this Project project, params string[] kindGuids)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
@@ -35,7 +37,7 @@ namespace ADR.VisualStudio
         }
 
         public static async Task<(string path, string text)> GetDocumentText(this ProjectItem projectItem, string solutionDirectory)
-        {            
+        {
             if (projectItem == null) return (string.Empty, string.Empty);
 
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -57,7 +59,7 @@ namespace ADR.VisualStudio
             return (path, File.ReadAllText(path));
         }
 
-        public static async Task OpenDocumentForProjectItem(ProjectItem originalProjectItem)
+        public static async System.Threading.Tasks.Task OpenDocumentForProjectItem(this ProjectItem originalProjectItem)
         {
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var window = originalProjectItem.Open();
@@ -76,5 +78,35 @@ namespace ADR.VisualStudio
                 return string.Empty;
             }
         }
+
+        public static async Task<Project> GetProjectByName(this Solution solution, string name)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var sln = Microsoft.Build.Construction.SolutionFile.Parse(solution.FullName);
+
+            foreach (Project p in solution.Projects)
+            {
+                if (p.Name == name)
+                {
+                    return p;
+                }
+            }
+
+            return null;
+        }
+
+        public static async Task<ProjectItem> GetProjectItemByName(this ProjectItems projectItems, string name, CancellationToken cancellationToken)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            foreach (ProjectItem item in projectItems)
+            {
+                if (item.Name == name) return item;
+            }
+
+            return null;
+        }
+
     }
 }

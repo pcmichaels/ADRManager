@@ -52,7 +52,6 @@
     <Compile Include="Rules\IRulesAnalyser.cs" />
     <Compile Include="Rules\RulesAnalyser.cs" />
     <Compile Include="VisualStudio\ISolutionAnalyser.cs" />
-    <Compile Include="VisualStudio\ProjectHelper.cs" />
     <Compile Include="VisualStudio\ProjectItemTypes.cs" />
     <Compile Include="Models\DataResult.cs" />
     <Compile Include="Models\ProjectData.cs" />
@@ -113,6 +112,10 @@
     <ProjectReference Include="..\AdrManager.MvvmUtilities\AdrManager.MvvmUtilities.csproj">
       <Project>{a3b4ff08-abc6-4c42-985f-381afd9964ec}</Project>
       <Name>AdrManager.MvvmUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AdrManager.VisualStudioSDKHelper\AdrManager.VisualStudioSDKHelper.csproj">
+      <Project>{7D13233F-FC8B-471A-9AE7-88E2457FB349}</Project>
+      <Name>AdrManager.VisualStudioSDKHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

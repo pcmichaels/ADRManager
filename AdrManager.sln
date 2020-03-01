@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{444A7EF2-787
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdrManager.Extension", "ADRManager.Extension\AdrManager.Extension.csproj", "{9B975208-7134-4EBC-B5B4-472C837E3731}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdrManager.VisualStudioSDKHelper", "AdrManager.VisualStudioSDKHelper\AdrManager.VisualStudioSDKHelper.csproj", "{7D13233F-FC8B-471A-9AE7-88E2457FB349}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{9B975208-7134-4EBC-B5B4-472C837E3731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B975208-7134-4EBC-B5B4-472C837E3731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B975208-7134-4EBC-B5B4-472C837E3731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D13233F-FC8B-471A-9AE7-88E2457FB349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D13233F-FC8B-471A-9AE7-88E2457FB349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D13233F-FC8B-471A-9AE7-88E2457FB349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D13233F-FC8B-471A-9AE7-88E2457FB349}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

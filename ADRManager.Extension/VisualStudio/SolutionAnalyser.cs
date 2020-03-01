@@ -2,6 +2,7 @@
 using ADR.Models;
 using System.Threading.Tasks;
 using ADR.Rules;
+using AdrManager.VisualStudioSDKHelper;
 
 namespace ADR.VisualStudio
 {

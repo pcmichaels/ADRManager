@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EnvDTE" Version="8.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.202" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="16.4.29519.181" />
+  </ItemGroup>
+
+</Project>

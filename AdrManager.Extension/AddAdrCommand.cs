@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using AdrManager.VisualStudioSDKHelper;
 using EnvDTE;
 using EnvDTE100;
 using EnvDTE80;
@@ -104,16 +105,16 @@ namespace ADR
                 Array selectedItems = (Array)uih.SelectedItems;
                 foreach (UIHierarchyItem selectedItem in selectedItems)
                 {
-                    var project = await GetProjectByName(selectedItem.Name);
+                    var project = await dte.Solution.GetProjectByName(selectedItem.Name);
                     if (project == null) continue;
 
-                    var docsProjectItem = await GetProjectItemByName("docs", project.ProjectItems);
+                    var docsProjectItem = await project.ProjectItems.GetProjectItemByName("docs", package.DisposalToken);
                     if (docsProjectItem == null)
                     {
                         docsProjectItem = project.ProjectItems.AddFolder("docs");
                     }
 
-                    var adrProjectItem = await GetProjectItemByName("adr", docsProjectItem.ProjectItems);
+                    var adrProjectItem = await docsProjectItem.ProjectItems.GetProjectItemByName("adr", package.DisposalToken);
                     if (adrProjectItem == null)
                     {
                         adrProjectItem = docsProjectItem.ProjectItems.AddFolder("adr");
@@ -132,7 +133,7 @@ namespace ADR
             {
                 VsShellUtilities.ShowMessageBox(
                     this.package,
-                    "Unable to add ADR",
+                    "Unable to add ADR: " + ex.Message,
                     "Error",
                     OLEMSGICON.OLEMSGICON_INFO,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -141,34 +142,5 @@ namespace ADR
             }
         }
 
-        private async Task<ProjectItem> GetProjectItemByName(string name, ProjectItems projectItems)
-        {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-
-            foreach (ProjectItem item in projectItems)
-            {
-                if (item.Name == name) return item;
-            }
-
-            return null;
-        }
-
-        private async Task<Project> GetProjectByName(string name)
-        {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var dte = (DTE)Package.GetGlobalService(typeof(DTE));
-
-            var sln = Microsoft.Build.Construction.SolutionFile.Parse(dte.Solution.FullName);
-
-            foreach (Project p in dte.Solution.Projects)
-            {
-                if (p.Name == name)
-                {
-                    return p;
-                }
-            }
-
-            return null;
-        }
     }
 }

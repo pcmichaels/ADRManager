@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ADR.Models;
 using ADR.Rules;
 using Unity;
+using AdrManager.VisualStudioSDKHelper;
 
 namespace ADR.ViewModels
 {
@@ -50,7 +51,7 @@ namespace ADR.ViewModels
         private async Task OpenFile(string path)
         {
             var file = MarkdownFiles.FirstOrDefault(a => a.Path == path);
-            await ProjectHelper.OpenDocumentForProjectItem(file.OriginalProjectItem);
+            await file.OriginalProjectItem.OpenDocumentForProjectItem();
         }
 
         public string Summary 
