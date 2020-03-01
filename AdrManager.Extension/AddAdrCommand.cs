@@ -4,7 +4,9 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
+using EnvDTE100;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -90,26 +92,83 @@ namespace ADR
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-
-            var dte = await package.GetServiceAsync(typeof(DTE)).ConfigureAwait(false) as DTE2;
-
-            UIHierarchy uih = (UIHierarchy)dte.Windows.Item(
-                EnvDTE.Constants.vsWindowKindSolutionExplorer).Object;
-            Array selectedItems = (Array)uih.SelectedItems;
-            foreach (UIHierarchyItem selectedItem in selectedItems)
+            try
             {
-                // Show a message box to prove we were here
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+
+                var dte = await package.GetServiceAsync(typeof(DTE)).ConfigureAwait(false) as DTE2;
+                Assumes.Present(dte);
+
+                UIHierarchy uih = (UIHierarchy)dte.Windows.Item(
+                    EnvDTE.Constants.vsWindowKindSolutionExplorer).Object;
+                Array selectedItems = (Array)uih.SelectedItems;
+                foreach (UIHierarchyItem selectedItem in selectedItems)
+                {
+                    var project = await GetProjectByName(selectedItem.Name);
+                    if (project == null) continue;
+
+                    var docsProjectItem = await GetProjectItemByName("docs", project.ProjectItems);
+                    if (docsProjectItem == null)
+                    {
+                        docsProjectItem = project.ProjectItems.AddFolder("docs");
+                    }
+
+                    var adrProjectItem = await GetProjectItemByName("adr", docsProjectItem.ProjectItems);
+                    if (adrProjectItem == null)
+                    {
+                        adrProjectItem = docsProjectItem.ProjectItems.AddFolder("adr");
+                    }
+
+                    string templatePath = ((Solution4)dte.Solution).GetProjectTemplate("TextFile", "CSharp");
+                    
+                    
+                    dte.Solution.AddFromTemplate(templatePath, "", adrProjectItem.Name, false);
+
+
+                    project.Save();
+                }
+            }
+            catch (Exception ex)
+            {
                 VsShellUtilities.ShowMessageBox(
                     this.package,
-                    selectedItem.Name,
-                    "Solution Item",
+                    "Unable to add ADR",
+                    "Error",
                     OLEMSGICON.OLEMSGICON_INFO,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 
             }
+        }
 
+        private async Task<ProjectItem> GetProjectItemByName(string name, ProjectItems projectItems)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+
+            foreach (ProjectItem item in projectItems)
+            {
+                if (item.Name == name) return item;
+            }
+
+            return null;
+        }
+
+        private async Task<Project> GetProjectByName(string name)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var dte = (DTE)Package.GetGlobalService(typeof(DTE));
+
+            var sln = Microsoft.Build.Construction.SolutionFile.Parse(dte.Solution.FullName);
+
+            foreach (Project p in dte.Solution.Projects)
+            {
+                if (p.Name == name)
+                {
+                    return p;
+                }
+            }
+
+            return null;
         }
     }
 }
